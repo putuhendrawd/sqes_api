@@ -1,0 +1,45 @@
+services:
+  # 1. The FastAPI Application Service
+  app: 
+    image: sqes-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sqes-api
+    env_file:
+      - .env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+    # mount firebase credentials
+      - ./.secret/sqes-flutter-firebase-adminsdk-fbsvc-4fab890f84.json:/home/app/web/firebase-key.json:ro
+    # mount SQESDATA directory
+      - /home/geo2sqes/SQESDATA:/home/app/SQESDATA:ro
+    networks:
+      - app-network
+  # 2. The Nginx Reverse Proxy Service
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: sqes-api-nginx
+    ports:
+      # Map port 2107 of the host server to port 2107 of the Nginx container.
+      # This makes your entire application accessible on port 2107.
+      - "2107:2107"
+    volumes:
+      # Mount our custom nginx.conf to configure the Nginx container.
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      # This ensures the FastAPI app starts before Nginx does.
+      - app
+    networks:
+      - app-network
+
+# 3. The Network
+# Defines the private network that allows the containers to communicate securely.
+networks:
+  app-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
