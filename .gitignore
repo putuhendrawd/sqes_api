@@ -7,8 +7,8 @@
 
 # Ignore secret file and folder #
 .secret/
-.env
-.venv
+.env*
+.venv*
 
 # Ignore Cache #
 *__pycache__
