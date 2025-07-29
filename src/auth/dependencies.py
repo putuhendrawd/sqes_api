@@ -3,14 +3,12 @@ import logging
 from datetime import datetime
 from functools import lru_cache
 from typing import Annotated, Dict, List, Optional
-
 import pytz
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from firebase_admin import auth, firestore
 from firebase_admin.auth import ExpiredIdTokenError, InvalidIdTokenError, UserDisabledError
 from firebase_admin.exceptions import FirebaseError
-
 from src.auth.schemas import FirebaseUser
 from src.core.config import settings # Import the centralized settings
 

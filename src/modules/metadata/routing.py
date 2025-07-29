@@ -8,44 +8,44 @@ from src.auth.dependencies import metadata_read_required
 router = APIRouter(dependencies=[metadata_read_required])
 
 
-@router.get(
-    "/mysql/all",
-    response_model=List[schemas.MetadataMySQLBase],
-    summary="Get All Metadata from MySQL"
-)
-async def get_all_mysql_metadata(db: DbMySQL):
-    """Retrieves all station metadata records from the MySQL database."""
-    return services.get_all_mysql_metadata(db)
+# @router.get(
+#     "/mysql/all",
+#     response_model=List[schemas.MetadataMySQLBase],
+#     summary="Get All Metadata from MySQL"
+# )
+# async def get_all_mysql_metadata(db: DbMySQL):
+#     """Retrieves all station metadata records from the MySQL database."""
+#     return services.get_all_mysql_metadata(db)
 
 
-@router.get(
-    "/mysql/{sta_code}",
-    response_model=schemas.MetadataMySQLBase,
-    summary="Get Metadata of Specific Station from MySQL"
-)
-async def get_mysql_metadata(sta_code: str, db: DbMySQL):
-    """Retrieves metadata for a specific station from the MySQL database."""
-    return services.get_mysql_metadata_by_station(db, sta_code)
+# @router.get(
+#     "/mysql/{sta_code}",
+#     response_model=schemas.MetadataMySQLBase,
+#     summary="Get Metadata of Specific Station from MySQL"
+# )
+# async def get_mysql_metadata(sta_code: str, db: DbMySQL):
+#     """Retrieves metadata for a specific station from the MySQL database."""
+#     return services.get_mysql_metadata_by_station(db, sta_code)
 
 
-@router.get(
-    "/pg/all",
-    response_model=List[schemas.MetadataPostgreSQLBase],
-    summary="Get All Metadata from PostgreSQL"
-)
-async def get_all_pg_metadata(db: DbPg):
-    """Retrieves all station metadata records from the PostgreSQL database."""
-    return services.get_all_pg_metadata(db)
+# @router.get(
+#     "/pg/all",
+#     response_model=List[schemas.MetadataPostgreSQLBase],
+#     summary="Get All Metadata from PostgreSQL"
+# )
+# async def get_all_pg_metadata(db: DbPg):
+#     """Retrieves all station metadata records from the PostgreSQL database."""
+#     return services.get_all_pg_metadata(db)
 
 
-@router.get(
-    "/pg/{sta_code}",
-    response_model=schemas.MetadataPostgreSQLBase,
-    summary="Get Metadata of Specific Station from PostgreSQL"
-)
-async def get_pg_metadata(sta_code: str, db: DbPg):
-    """Retrieves metadata for a specific station from the PostgreSQL database."""
-    return services.get_pg_metadata_by_station(db, sta_code)
+# @router.get(
+#     "/pg/{sta_code}",
+#     response_model=schemas.MetadataPostgreSQLBase,
+#     summary="Get Metadata of Specific Station from PostgreSQL"
+# )
+# async def get_pg_metadata(sta_code: str, db: DbPg):
+#     """Retrieves metadata for a specific station from the PostgreSQL database."""
+#     return services.get_pg_metadata_by_station(db, sta_code)
 
 
 @router.get(

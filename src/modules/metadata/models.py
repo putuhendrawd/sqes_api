@@ -64,10 +64,10 @@ class MetadataPostgreSQL(Base_pg):
 
 class StationSensorPostgreSQL(Base_pg):
     __tablename__ = 'stations_sensor'
-    id = Column(Integer, primary_key=True, nullable=False)
-    code = Column(String, nullable=True)
-    location = Column(String, nullable=True)
-    channel = Column(String, nullable=True)
+    # id = Column(Integer, primary_key=True, nullable=False)
+    code = Column(String, nullable=True, primary_key = True)
+    location = Column(String, nullable=True, primary_key = True)
+    channel = Column(String, nullable=True, primary_key = True)
     sensor = Column(String, nullable=True)
 
     def __repr__(self):
