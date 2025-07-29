@@ -1,14 +1,14 @@
 import logging
 import os
 from datetime import date
-from typing import Dict, List
+from typing import Dict, List, Any
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.orm import Session, joinedload
 from src.core.config import settings
 from . import models
 from ..metadata import models as metadata_models
-from .schemas import StationsQCDetailsResponseBase
+from .schemas import StationsQCDetailsResponseBase, DataItemSchemas
 
 logger = logging.getLogger(__name__)
 
@@ -121,3 +121,37 @@ def get_image_filepath(image_type: str, image_date: date, code: str, channel: st
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Image file not found.")
 
     return full_path
+
+def get_station_availability_by_date(
+    db: Session,
+    station_code: str,
+    start_date: date,
+    end_date: date
+) -> List[Dict[str, Any]]:
+    """
+    Compiles an availability history for a station within a date range, pivoted by channel.
+    """
+    query = select(models.StationsQCDetailsPostgreSQL).where(
+        models.StationsQCDetailsPostgreSQL.code == station_code,
+        models.StationsQCDetailsPostgreSQL.date.between(start_date, end_date)
+    ).order_by(models.StationsQCDetailsPostgreSQL.date)
+
+    records = db.execute(query).scalars().all()
+
+    if not records:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No availability history found for station '{station_code}' between {start_date} and {end_date}"
+        )
+
+    grouped_by_date = {}
+
+    for record in records:
+        date_str = record.date.isoformat()
+        
+        if date_str not in grouped_by_date:
+            grouped_by_date[date_str] = {'timestamp': record.date}
+        
+        grouped_by_date[date_str][record.channel] = record.availability
+
+    return list(grouped_by_date.values())

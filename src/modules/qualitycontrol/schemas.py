@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, condecimal, computed_field
+from pydantic import BaseModel, Field, condecimal, computed_field, ConfigDict
 from typing import Optional, List, Annotated
 from decimal import Decimal
 from datetime import datetime as datetime_cls, date as date_cls
@@ -203,3 +203,46 @@ class StationsQCDetailsResponseBase(BaseModel):
 
     class Config:
         from_attributes = True
+
+# Respon schemas for time-based data retrieval
+class DataItemSchemas(BaseModel):
+    """
+    **Data Item Schema for Time-Based Retrieval**
+
+    This schema represents a single data item with a timestamp and value,
+    typically used for time-series data retrieval.
+
+    Attributes:
+    - **timestamp** (`datetime_cls`): The timestamp of the data item.
+    """
+    model_config = ConfigDict(extra="allow")
+    timestamp: datetime_cls = Field(..., description="The timestamp of the data item")
+
+class MetaSchemas(BaseModel):
+    """
+    **Metadata Schema for Time-Based Retrieval**
+
+    This schema represents metadata associated with a time-based data retrieval,
+    including the station code and a list of data items.
+
+    Attributes:
+    - **station_code** (`str`): The unique code of the station.
+    - **data** (`List[DataItemSchemas]`): A list of data items, each containing a timestamp and value.
+    - **count** (`int`): The number of data items retrieved.
+    """
+    code: str = Field(..., description="The unique code of the station")
+    count: int = Field(..., description="The number of data items retrieved")
+                                        
+class AvailabilityResponseBase(BaseModel):
+    """
+    **Availability Response Model**
+
+    This schema represents the availability of data for a specific station
+    over a given time period, including the station code and a list of data items.
+
+    Attributes:
+    - **meta** (`str`): The metadata of the data retrieval.
+    - **data** (`List[DataItemSchemas]`): A list of data items, each containing a timestamp and value.
+    """
+    meta: MetaSchemas = Field(..., description="Metadata about the data retrieval, including station code and count")
+    data: List[DataItemSchemas] = Field(..., description="A list of data items with timestamps and values")

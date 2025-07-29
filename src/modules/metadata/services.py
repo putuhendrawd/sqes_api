@@ -128,5 +128,6 @@ def get_latency_by_station_channel(
             status_code=404,
             detail="Latency data not available for the specified station, channel, and date range."
         )
-    return {item.datetime: item.latency for item in latencies}
+    return {item.datetime: item.latency if item.latency is not None else -1 for item in latencies}
+
 

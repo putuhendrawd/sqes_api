@@ -103,3 +103,38 @@ async def get_signal_image(
     """Retrieves a securely located signal image."""
     file_path = services.get_image_filepath("signal", image_date=date_str, code=code, channel=channel)
     return FileResponse(file_path)
+
+@router.get(
+    "/availability/{station_code}", # The year is removed from the path
+    response_model=schemas.AvailabilityResponseBase,
+    summary="Get Station Availability by Channel in Date Range"
+)
+def get_station_availability_endpoint(
+    station_code: str,
+    # Dates are now query parameters (e.g., ?start_date=2025-01-01)
+    # FastAPI automatically converts the ISO string to a date object
+    start_date: date,
+    end_date: date,
+    db: DbPg
+):
+    """
+    Retrieves the availability/quality data for a station within a specific
+    date range, pivoted by channel for each day.
+    """
+    data_list = services.get_station_availability_by_date(
+        db=db,
+        station_code=station_code,
+        start_date=start_date,
+        end_date=end_date
+    )
+
+    meta_data = {
+        "code": station_code,
+        "count": len(data_list)
+    }
+
+    # 3. Return the final response
+    return {
+        "meta": meta_data,
+        "data": data_list
+    }
