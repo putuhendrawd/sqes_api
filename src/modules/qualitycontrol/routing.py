@@ -105,7 +105,7 @@ async def get_signal_image(
     return FileResponse(file_path)
 
 @router.get(
-    "/availability/{station_code}", # The year is removed from the path
+    "/data/availability/{station_code}", # The year is removed from the path
     response_model=schemas.AvailabilityResponseBase,
     summary="Get Station Availability by Channel in Date Range"
 )

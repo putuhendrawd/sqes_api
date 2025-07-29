@@ -40,7 +40,7 @@ class Settings(BaseSettings):
     DEBUG_BYPASS_TOKEN: str = Field("your-super-secret-debug-token", description="The token to bypass auth in debug mode. Should be complex.")
 
     model_config = SettingsConfigDict(
-        env_file=".env_dev",
+        env_file=".env",
         env_file_encoding='utf-8',
         extra="ignore"
     )
