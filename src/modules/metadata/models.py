@@ -124,11 +124,11 @@ class StationSiteQualityPostgreSQL(Base_pg):
     vs30val = Column(Integer, nullable=True)
     photovoltaic = Column(String(255), nullable=True)
     photoval = Column(Integer, nullable=True)
-    hvsr = Column(Numeric(precision=5, scale=2), nullable=True) # numeric(5,2)
+    hvsr = Column(Numeric(precision=5, scale=2), nullable=True) 
     hvsrval = Column(Integer, nullable=True)
-    psd = Column(Numeric(precision=5, scale=2), nullable=True)   # numeric(5,2)
+    psd = Column(Numeric(precision=5, scale=2), nullable=True)   
     psdval = Column(Integer, nullable=True)
-    score = Column(Numeric(precision=5, scale=2), nullable=True)  # numeric(5,2)
+    score = Column(Numeric(precision=5, scale=2), nullable=True)  
     site_quality = Column(String(255), nullable=True)
 
     data_quality = relationship("StationsDataQualityPostgreSQL", 

@@ -7,7 +7,6 @@ import logging # Import logging
 # Get a logger instance for this module
 logger = logging.getLogger(__name__)
 
-# Accept service_account_key_path as an argument from the caller (main.py)
 def initialize_firebase(service_account_key_path: str):
     """
     Initializes the Firebase Admin SDK.

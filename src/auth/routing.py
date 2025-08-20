@@ -10,8 +10,6 @@ from src.auth.dependencies import get_current_firebase_user, admin_required
 from src.auth.schemas import FirebaseUser 
 
 # --- Logging Configuration ---
-# It's generally best practice to configure logging once in your main.py or a dedicated config module.
-# If this is the *only* place you're setting basicConfig, it's fine.
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__) # Get a logger instance for this module
 
@@ -39,7 +37,6 @@ async def read_current_user(
     Returns:
         FirebaseUser: The profile information of the authenticated user.
     """
-    # This log is good for production to track access to this sensitive endpoint
     logger.info(f"Accessed /api/auth/me. User UID: {current_user.uid}, Role: {current_user.role}, Email: {current_user.email}")
     return current_user
 
@@ -84,7 +81,6 @@ async def set_user_role(
         return {"message": f"Role updated to '{request.role}' for user {user_id_to_update}. User needs to re-authenticate to get the new ID token."}
     
     except auth.UserNotFoundError:
-        # Log a warning if the target user doesn't exist
         logger.warning(f"Attempted to set role for non-existent user: {request.uid or request.email}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -95,5 +91,5 @@ async def set_user_role(
         logger.error(f"Error setting user role for {request.uid or request.email}: {e}", exc_info=True)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to set user role: An unexpected server error occurred." # Generic message for client
+            detail=f"Failed to set user role: An unexpected server error occurred." 
         )

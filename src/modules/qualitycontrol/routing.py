@@ -111,8 +111,6 @@ async def get_signal_image(
 )
 def get_station_availability_endpoint(
     station_code: str,
-    # Dates are now query parameters (e.g., ?start_date=2025-01-01)
-    # FastAPI automatically converts the ISO string to a date object
     start_date: date,
     end_date: date,
     db: DbPg

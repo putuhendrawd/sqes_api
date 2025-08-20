@@ -16,7 +16,7 @@ from src.modules.qualitycontrol import router as qcresult_router
 
 # --- Global Logging Configuration (CRITICAL for Production) ---
 logging.basicConfig(
-    level=settings.LOG_LEVEL,  # Control log level from settings
+    level=settings.LOG_LEVEL,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout)
@@ -35,7 +35,6 @@ async def lifespan(app: FastAPI):
     logger.info("Application startup initiated.")
     app.state.start_time = time.time()
 
-    # --- Initialize Firebase Admin SDK (using path from settings) ---
     logger.info("Initializing Firebase Admin SDK...")
     try:
         initialize_firebase(settings.FIREBASE_SERVICE_ACCOUNT_KEY_PATH)

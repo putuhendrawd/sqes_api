@@ -13,14 +13,12 @@ from src.auth.schemas import FirebaseUser
 from src.core.config import settings # Import the centralized settings
 
 # --- Module-level logger ---
-# Inherits configuration from main.py, so no basicConfig here.
 logger = logging.getLogger(__name__)
 
 # --- Reusable Security Scheme ---
 bearer_scheme = HTTPBearer()
 
 # --- Scope Definitions ---
-# This is a good way to centralize scope definitions.
 API_SCOPES = {
     "metadata:read": "Allows reading station metadata.",
     "metadata:write": "Allows writing/modifying station metadata.",
@@ -97,7 +95,6 @@ async def get_current_firebase_user(
     token = credentials.credentials
 
     # --- Secure Debug Bypass Logic ---
-    # This logic is now controlled by your environment settings.
     if settings.ENABLE_DEBUG_BYPASS_TOKEN and token == settings.DEBUG_BYPASS_TOKEN:
         return _create_debug_user()
 
@@ -176,7 +173,6 @@ def require_scopes(required_scopes: List[str]):
 
 
 # --- Pre-configured Dependencies for Common Use Cases ---
-# Using the factory to create specific dependencies makes your endpoint code cleaner.
 admin_required = require_scopes(["admin"])
 metadata_write_required = require_scopes(["metadata:write"])
 metadata_read_required = require_scopes(["metadata:read"])

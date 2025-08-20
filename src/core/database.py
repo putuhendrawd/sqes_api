@@ -3,7 +3,6 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 from src.core.config import settings 
 
 # --- MySQL Database Configuration ---
-# Load database URL directly from settings, which gets it from environment variables
 URL_DATABASE_MYSQL = settings.DATABASE_URL_MYSQL
 engine_mysql = create_engine(
     URL_DATABASE_MYSQL,
@@ -17,7 +16,6 @@ SessionLocal_mysql = sessionmaker(autocommit=False, autoflush=False, bind=engine
 Base_mysql = declarative_base() 
 
 # --- PostgreSQL Database Configuration ---
-# Load database URL directly from settings, which gets it from environment variables
 URL_DATABASE_PG = settings.DATABASE_URL_PG
 engine_pg = create_engine(
     URL_DATABASE_PG,

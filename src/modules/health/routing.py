@@ -159,7 +159,6 @@ async def readiness_check(request: Request) -> Dict[str, Any]:
     if pg_status["status"] == "DOWN":
         service_status = "DEGRADED" 
     
-    # Optional: Add other critical component checks (e.g., Firebase, external APIs)
     # Firebase is already initialized, but you could add a test connection if needed.
     if not firebase_admin._apps: # Basic check
         components_status["firebase_admin_sdk"] = {"status": "DOWN", "message": "Firebase Admin SDK not initialized."}
@@ -181,7 +180,7 @@ async def readiness_check(request: Request) -> Dict[str, Any]:
     health_response = {
         "service": "SQES API 2025",
         "status": service_status,
-        "version": settings.APP_VERSION, # Use version from central settings
+        "version": settings.APP_VERSION,
         "timestamp_utc": timestamp,
         "response_time_ms": response_time_ms,
         "uptime_seconds": uptime_seconds,
