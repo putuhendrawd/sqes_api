@@ -12,7 +12,7 @@ services:
       - "host.docker.internal:host-gateway"
     volumes:
     # mount firebase credentials
-      - ./.secret/sqes-flutter-firebase-adminsdk-fbsvc-4fab890f84.json:/home/app/web/firebase-key.json:ro
+      - ./.secret/sqes-flutter-firebase.json:/home/app/web/firebase-key.json:ro
     # mount SQESDATA directory
       - /home/geo2sqes/SQESDATA:/home/app/SQESDATA:ro
     networks:
