@@ -107,6 +107,7 @@ async def get_signal_image(
 @router.get(
     "/data/availability/{station_code}", # The year is removed from the path
     response_model=schemas.AvailabilityResponseBase,
+    dependencies=[qc_read_required],
     summary="Get Station Availability by Channel in Date Range"
 )
 def get_station_availability_endpoint(
@@ -136,3 +137,35 @@ def get_station_availability_endpoint(
         "meta": meta_data,
         "data": data_list
     }
+
+@router.get(
+    "/data/availability/",  # Note: The path is now at the root level without a station code
+    response_model=schemas.AllStationsAvailabilityResponse,
+    dependencies=[qc_read_required],
+    summary="Get All Stations Availability by Channel in Date Range"
+)
+def get_all_stations_availability_endpoint(
+    start_date: date,
+    end_date: date,
+    db: DbPg
+):
+    """
+    Retrieves the availability/quality data for ALL stations within a specific
+    date range, pivoted by channel for each day. The result is a dictionary
+    keyed by station code.
+    """
+    data_dict = services.get_all_stations_availability_by_date(
+        db=db,
+        start_date=start_date,
+        end_date=end_date
+    )
+
+    # Calculate total records across all stations for metadata
+    total_records = sum(len(v) for v in data_dict.values())
+
+    meta_data = {
+        "stationCount": len(data_dict),
+        "totalRecords": total_records
+    }
+
+    return {"meta": meta_data, "data": data_dict}

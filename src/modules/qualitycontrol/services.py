@@ -155,3 +155,55 @@ def get_station_availability_by_date(
         grouped_by_date[date_str][record.channel] = record.availability
 
     return list(grouped_by_date.values())
+
+def get_all_stations_availability_by_date(
+    db: Session,
+    start_date: date,
+    end_date: date
+) -> Dict[str, List[Dict[str, Any]]]:
+    """
+    Compiles an availability history for all stations within a date range.
+    The result is a dictionary with station codes as keys, and the values are
+    lists of availability data, pivoted by channel for each date.
+    """
+    query = select(models.StationsQCDetailsPostgreSQL).where(
+        models.StationsQCDetailsPostgreSQL.date.between(start_date, end_date)
+    ).order_by(models.StationsQCDetailsPostgreSQL.code, models.StationsQCDetailsPostgreSQL.date)
+
+    records = db.execute(query).scalars().all()
+
+    if not records:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No availability history found for any station between {start_date} and {end_date}"
+        )
+
+    # This will hold the final structured data, e.g., {'STN1': [date_data_1, date_data_2]}
+    all_stations_data = {}
+
+    for record in records:
+        station_code = record.code
+        date_str = record.date.isoformat()
+        
+        # If the station is not yet in our dictionary, add it.
+        # The value will be a dictionary to group records by date string.
+        if station_code not in all_stations_data:
+            all_stations_data[station_code] = {}
+        
+        # Get the dictionary that holds date-grouped data for the current station.
+        station_dates = all_stations_data[station_code]
+        
+        # If the date is not yet a key for the current station, add it.
+        if date_str not in station_dates:
+            station_dates[date_str] = {'timestamp': record.date}
+        
+        # Add the channel availability to the corresponding date entry.
+        station_dates[date_str][record.channel] = record.availability
+
+    # The data is currently grouped like: {'STN1': {'2023-01-01': {...}, '2023-01-02': {...}}}
+    # We need to convert the inner dictionaries of dates into lists.
+    final_result = {}
+    for station_code, dates_dict in all_stations_data.items():
+        final_result[station_code] = list(dates_dict.values())
+
+    return final_result

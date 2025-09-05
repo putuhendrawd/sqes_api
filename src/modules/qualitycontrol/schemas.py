@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, condecimal, computed_field, ConfigDict
-from typing import Optional, List, Annotated
+from typing import Optional, List, Annotated, Dict
 from decimal import Decimal
 from datetime import datetime as datetime_cls, date as date_cls
 from ..metadata.schemas import MetadataPostgreSQLBase, StationSiteQualityBase
@@ -246,3 +246,31 @@ class AvailabilityResponseBase(BaseModel):
     """
     meta: MetaSchemas = Field(..., description="Metadata about the data retrieval, including station code and count")
     data: List[DataItemSchemas] = Field(..., description="A list of data items with timestamps and values")
+
+class AllStationsAvailabilityMeta(BaseModel):
+    """
+    **Metadata Schema for All-Station Availability Retrieval**
+
+    This schema represents metadata for retrieving availability data across all stations.
+
+    Attributes:
+    - **station_count** (`int`): The total number of stations returned.
+    - **total_records** (`int`): The total number of daily records across all stations.
+    """
+    station_count: int = Field(..., alias='stationCount', description="The total number of stations returned.")
+    total_records: int = Field(..., alias='totalRecords', description="The total number of daily records across all stations.")
+
+
+class AllStationsAvailabilityResponse(BaseModel):
+    """
+    **All-Station Availability Response Model**
+
+    This schema represents the availability data for all stations over a given time period.
+    The data is structured as a dictionary where keys are station codes.
+
+    Attributes:
+    - **meta** (`AllStationsAvailabilityMeta`): Metadata about the data retrieval.
+    - **data** (`Dict[str, List[DataItemSchemas]]`): A dictionary of station data.
+    """
+    meta: AllStationsAvailabilityMeta
+    data: Dict[str, List[DataItemSchemas]]
